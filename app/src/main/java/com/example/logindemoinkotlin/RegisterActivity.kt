@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import com.example.logindemoinkotlin.databinding.ActivityRegisterBinding
 import com.example.logindemoinkotlin.dataclass.UserInformationDataClass
 import kotlinx.coroutines.CoroutineScope

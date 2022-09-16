@@ -2,9 +2,11 @@ package com.example.logindemoinkotlin
 
 import android.Manifest
 import android.content.Intent
+import android.graphics.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +20,7 @@ import kotlinx.coroutines.launch
 
 class ShowUserListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowUserListBinding;
+    private val p = Paint()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityShowUserListBinding.inflate(layoutInflater)
@@ -39,20 +42,37 @@ class ShowUserListActivity : AppCompatActivity() {
                     when (direction) {
                         ItemTouchHelper.LEFT -> {
                             val position = viewHolder.adapterPosition
-                            val username:String = it[position].userName!!
+                            val username: String = it[position].userName!!
                             db.userDao().deleteByUserName(username)
                             it.removeAt(position)
                             adapter.notifyItemRemoved(position)
-                            Toast.makeText(applicationContext, "Delete $username", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext,
+                                "Delete $username",
+                                Toast.LENGTH_LONG).show()
                         }
                         ItemTouchHelper.RIGHT -> {
-                            var intent = Intent(applicationContext,RegisterActivity::class.java)
-                            intent.putExtra("UPDATE",true)
-                            intent.putExtra("MODAl",it[viewHolder.adapterPosition])
+                            var intent = Intent(applicationContext, RegisterActivity::class.java)
+                            intent.putExtra("UPDATE", true)
+                            intent.putExtra("MODAl", it[viewHolder.adapterPosition])
                             startActivity(intent)
-                            Toast.makeText(applicationContext, "Update. ${it[viewHolder.adapterPosition].userName}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext,
+                                "Update. ${it[viewHolder.adapterPosition].userName}",
+                                Toast.LENGTH_LONG).show()
                         }
                     }
+                }
+
+                override fun onChildDraw(
+                    c: Canvas,
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    dX: Float,
+                    dY: Float,
+                    actionState: Int,
+                    isCurrentlyActive: Boolean
+                ) {
+
+
                 }
             }
 

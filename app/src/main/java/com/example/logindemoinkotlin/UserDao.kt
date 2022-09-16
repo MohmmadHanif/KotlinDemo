@@ -16,7 +16,6 @@ interface UserDao {
     @Query("SELECT * FROM user")
     fun getAll(): LiveData<List<UserInformationDataClass>>
 
-
     @Query("SELECT * FROM user WHERE email = :email AND password = :password")
     fun login(email: String, password: String): LiveData<UserInformationDataClass>
 
@@ -45,4 +44,7 @@ interface UserDao {
 
     @Query("DELETE FROM user WHERE user_name = :username")
     fun deleteByUserName(username: String)
+
+    @Query("Select * From user where email = :email")
+    fun getsingle(email: String): LiveData<UserInformationDataClass>
 }

@@ -2,10 +2,11 @@ package com.example.logindemoinkotlin
 
 
 import android.Manifest
-
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Patterns
@@ -15,20 +16,26 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.logindemoinkotlin.databinding.ActivityLoginBinding
+import com.google.gson.Gson
 
 
 class LoginActivity : AppCompatActivity() {
+    private val sharedPrefFile = "kotlinsharedpreference"
 
     companion object {
         private const val READ_EXTERNAL_STORAGE = 100
         private const val STORAGE_PERMISSION_CODE = 101
     }
+
     private lateinit var binding: ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val sharedPreferences: SharedPreferences = this.getSharedPreferences(sharedPrefFile,
+            Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
         /*checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
             STORAGE_PERMISSION_CODE)
         checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -39,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(applicationContext, ShowUserListActivity::class.java))
         }
 
-        binding.loginBackImg.setOnClickListener(){
+        binding.loginBackImg.setOnClickListener() {
             finish()
         }
         binding.loginToRegisterBtn.setOnClickListener() {
@@ -82,7 +89,15 @@ class LoginActivity : AppCompatActivity() {
                                                 HomeActivity::class.java
                                             )
                                         )
-                                        finish()
+                                        db.userDao().getsingle(email).observe(this) {
+                                            editor.apply {
+                                                putBoolean("login", true)
+                                                val gson = Gson()
+                                                val json = gson.toJson(it)
+                                                putString("modal", json)
+                                                apply()
+                                            }
+                                        }
                                     } else {
                                         Toast.makeText(
                                             applicationContext,
@@ -158,7 +173,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions!!, grantResults)
         if (requestCode == 1) {
@@ -174,38 +189,36 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-
-
     //permission
-   /* fun checkPermission(permission: String, requestCode: Int) {
-        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
+    /* fun checkPermission(permission: String, requestCode: Int) {
+         if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
 
-            // Requesting the permission
-            ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
-        } else {
-            Toast.makeText(this, "Permission already granted", Toast.LENGTH_SHORT).show()
-        }
-    }
+             // Requesting the permission
+             ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+         } else {
+             Toast.makeText(this, "Permission already granted", Toast.LENGTH_SHORT).show()
+         }
+     }
 
-    // This function is called when the user accepts or decline the permission.
-    // Request Code is used to check which permission called this function.
-    // This request code is provided when the user is prompt for permission.
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>,
-                                            grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == READ_EXTERNAL_STORAGE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Read Permission Granted", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Read Permission Denied", Toast.LENGTH_SHORT).show()
-            }
-        } else if (requestCode == STORAGE_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Storage Permission Granted", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Storage Permission Denied", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }*/
+     // This function is called when the user accepts or decline the permission.
+     // Request Code is used to check which permission called this function.
+     // This request code is provided when the user is prompt for permission.
+     override fun onRequestPermissionsResult(requestCode: Int,
+                                             permissions: Array<String>,
+                                             grantResults: IntArray) {
+         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+         if (requestCode == READ_EXTERNAL_STORAGE) {
+             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                 Toast.makeText(this, "Read Permission Granted", Toast.LENGTH_SHORT).show()
+             } else {
+                 Toast.makeText(this, "Read Permission Denied", Toast.LENGTH_SHORT).show()
+             }
+         } else if (requestCode == STORAGE_PERMISSION_CODE) {
+             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                 Toast.makeText(this, "Storage Permission Granted", Toast.LENGTH_SHORT).show()
+             } else {
+                 Toast.makeText(this, "Storage Permission Denied", Toast.LENGTH_SHORT).show()
+             }
+         }
+     }*/
 }
