@@ -7,11 +7,10 @@
     android:background="#fff"
     tools:context=".FirstScreen">
 
-
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/splashScreen"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_200sdp"
         android:src="@drawable/logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

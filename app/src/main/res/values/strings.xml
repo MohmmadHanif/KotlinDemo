@@ -48,6 +48,13 @@
     <string name="register">Register</string>
     <string name="register_user_list">Register User List</string>
     <string name="body">quia et suscipit suscipit recusandae consequuntur expedita et cumreprehenderit molestiae ut ut quas totamnostrum rerum est autem sunt rem eveniet architecto</string>
+    <string name="todo">TODO</string>
+    <string name="login">Login</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="user_list">User List</string>
+    <string name="new_user">New User</string>
+    <string name="update">Update</string>
 
 
 </resources>

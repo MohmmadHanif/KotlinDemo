@@ -23,24 +23,27 @@ interface UserDao {
     fun checkEmail(email: String): LiveData<UserInformationDataClass>
 
     @Insert
-    suspend fun insertAll(vararg users: UserInformationDataClass)
+    fun insertAll(users: UserInformationDataClass)
 
 
-    @Query("Update user set first_name = :name, last_name = :lastName , user_name = :userName , phone_number = :phoneNumber , email = :email, password = :password, conform_password = :conPassword, gender = :gender, image = :image where user_name = :usernamee")
-    fun updateRecord(
-
-        name: String?,
-        lastName: String?,
-        userName: String?,
-        phoneNumber: String?,
-        email: String?,
-        password: String,
-        conPassword :String,
-        gender: String?,
-        usernamee :String?,
-        image :String
-    )
-
+    @Insert
+    fun insertUser(users: UserInformationDataClass): Long
+    /* @Query("Update user set first_name = :name, last_name = :lastName , user_name = :userName , phone_number = :phoneNumber , email = :email, password = :password, conform_password = :conPassword, gender = :gender, image = :image where user_name = :usernamee")
+     fun updateRecord(
+         id: Int?,
+         name: String?,
+         lastName: String?,
+         userName: String?,
+         phoneNumber: String?,
+         email: String?,
+         password: String,
+         conPassword :String,
+         gender: String?,
+         usernamee :String?,
+         image :String
+     )*/
+    @Update
+    fun updateRecord(users: UserInformationDataClass)
 
     @Query("DELETE FROM user WHERE user_name = :username")
     fun deleteByUserName(username: String)

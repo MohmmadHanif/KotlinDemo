@@ -1,22 +1,18 @@
 package com.example.logindemoinkotlin
 
-import android.Manifest
 import android.content.Intent
 import android.graphics.*
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.logindemoinkotlin.databinding.ActivityShowUserListBinding
 import com.example.logindemoinkotlin.dataclass.UserInformationDataClass
 import com.example.logindemoinkotlin.dataclass.swipeGester
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+
 
 class ShowUserListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowUserListBinding;
@@ -27,16 +23,16 @@ class ShowUserListActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val db: AppDatabase = AppDatabase.getDatabase(this)
-        binding.showUserBackImg.setOnClickListener(){
+        binding.showUserBackImg.setOnClickListener() {
             finish()
         }
 
-       // binding.recyclerview.layoutManager = LinearLayoutManager(this)
+        // binding.recyclerview.layoutManager = LinearLayoutManager(this)
         db.userDao().getAll().observe(this) {
             val adapter = ShowUserListAdapter(it as ArrayList<UserInformationDataClass>, this)
             binding.recyclerview.adapter = adapter
 
-            val swipeGester = object : swipeGester() {
+            val swipeGester = object : swipeGester(applicationContext) {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 
                     when (direction) {
@@ -62,18 +58,7 @@ class ShowUserListActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onChildDraw(
-                    c: Canvas,
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    dX: Float,
-                    dY: Float,
-                    actionState: Int,
-                    isCurrentlyActive: Boolean
-                ) {
 
-
-                }
             }
 
             val touchHelper = ItemTouchHelper(swipeGester)
@@ -81,6 +66,6 @@ class ShowUserListActivity : AppCompatActivity() {
 
         }
 
-        }
+    }
 
 }

@@ -76,5 +76,9 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
 
+    implementation 'com.github.kevingermainbusiness:ItemDecorator:1.0.15'
 
+    implementation 'com.github.xabaras:RecyclerViewSwipeDecorator:1.4'
+
+    implementation 'androidx.core:core-splashscreen:1.0.0'
 }

@@ -26,18 +26,19 @@ class HomeActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeBinding
     lateinit var apiList: ArrayList<apiDataClass>
     private val sharedPrefFile = "kotlinsharedpreference"
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-         val sharedPrefFile = "kotlinsharedpreference"
+        val sharedPrefFile = "kotlinsharedpreference"
         val sharedPreferences: SharedPreferences = this.getSharedPreferences(sharedPrefFile,
             Context.MODE_PRIVATE)
         apiList = ArrayList()
 
         val gson = Gson()
         val json: String = sharedPreferences.getString("modal", "").toString()
-        val obj = gson.fromJson(json,UserInformationDataClass::class.java )
+        val obj = gson.fromJson(json, UserInformationDataClass::class.java)
         binding.firstname.text = obj.firstName
         binding.lastname.text = obj.lastName
         binding.username.text = obj.userName
@@ -45,7 +46,7 @@ class HomeActivity : AppCompatActivity() {
         binding.showgender.text = obj.gender
         binding.email.text = obj.email
 
-        if (obj.image.isNotEmpty()){
+        if (obj.image.isNotEmpty()) {
             val bmp: Bitmap = BitmapFactory.decodeFile(obj.image)
             binding.showImg.setImageBitmap(bmp)
         }
@@ -53,7 +54,7 @@ class HomeActivity : AppCompatActivity() {
 
         binding.logout.setOnClickListener() {
             sharedPreferences.edit().clear().apply()
-            startActivity(Intent(applicationContext,LoginActivity::class.java))
+            startActivity(Intent(applicationContext, LoginActivity::class.java))
             finish()
         }
         GlobalScope.launch {
@@ -63,7 +64,6 @@ class HomeActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SuspiciousIndentation")
-    @OptIn(DelicateCoroutinesApi::class)
     private fun getNews() {
         binding.ProgressBar.visibility = View.VISIBLE
         val userApi = ApiUtils.getInstance().create(ApiInterface::class.java);

@@ -9,50 +9,59 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Observer
 import com.example.logindemoinkotlin.databinding.ActivityLoginBinding
+import com.example.logindemoinkotlin.util.Companion.showToast
 import com.google.gson.Gson
 
 
 class LoginActivity : AppCompatActivity() {
     private val sharedPrefFile = "kotlinsharedpreference"
-
-    companion object {
-        private const val READ_EXTERNAL_STORAGE = 100
-        private const val STORAGE_PERMISSION_CODE = 101
-    }
-
     private lateinit var binding: ActivityLoginBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        /**
+         *SharedPreferences
+         */
         val sharedPreferences: SharedPreferences = this.getSharedPreferences(sharedPrefFile,
             Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        /*checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            STORAGE_PERMISSION_CODE)
-        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
-            STORAGE_PERMISSION_CODE)*/
+
+
+        //permission
         permission_fn()
+
+        //Show UserList Button
 
         binding.showUserListBtn.setOnClickListener() {
             startActivity(Intent(applicationContext, ShowUserListActivity::class.java))
         }
-
+        //Back Button
         binding.loginBackImg.setOnClickListener() {
             finish()
         }
+        //Login To Register Button
         binding.loginToRegisterBtn.setOnClickListener() {
             startActivity(Intent(applicationContext, RegisterActivity::class.java))
         }
+
+        //Room Data Base Reference
         val db = AppDatabase.getDatabase(this)
+
+        //Login Button
         binding.loginBtn.setOnClickListener() {
             val email = binding.loginEmail.text.toString().trim()
             val password = binding.loginPassword.text.toString().trim()
@@ -66,6 +75,7 @@ class LoginActivity : AppCompatActivity() {
                 binding.loginEmail.error = "Please Enter Valid Email Address"
                 binding.loginEmail.requestFocus()
             } else {
+                //Login Email Check
                 db.userDao().checkEmail(email)
                     .observe(this, Observer { it ->
                         if (it != null && it.email.equals(email)) {
@@ -78,17 +88,14 @@ class LoginActivity : AppCompatActivity() {
                                             password
                                         )
                                     ) {
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "Login Successful",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        showToast(applicationContext, "Login Successful")
                                         startActivity(
                                             Intent(
                                                 applicationContext,
                                                 HomeActivity::class.java
                                             )
                                         )
+                                        //Store Login User Information in SharedPreferences
                                         db.userDao().getsingle(email).observe(this) {
                                             editor.apply {
                                                 putBoolean("login", true)
@@ -99,25 +106,18 @@ class LoginActivity : AppCompatActivity() {
                                             }
                                         }
                                     } else {
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "Wrong Password",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        showToast(applicationContext, "Wrong Password")
                                     }
                                 })
                         } else {
-                            Toast.makeText(
-                                applicationContext,
-                                "Wrong Username",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            showToast(applicationContext, "Wrong Username")
                         }
                     })
             }
         }
     }
 
+    //self Check Permission AlertDialog
     private fun requestStoragePermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
@@ -127,14 +127,14 @@ class LoginActivity : AppCompatActivity() {
             AlertDialog.Builder(this)
                 .setTitle("Permission Needed")
                 .setMessage("Permission is needed to access files from your device...")
-                .setPositiveButton("OK",
-                    DialogInterface.OnClickListener { dialog, which ->
-                        ActivityCompat.requestPermissions(
-                            this, arrayOf(
-                                Manifest.permission.READ_EXTERNAL_STORAGE
-                            ), 1
-                        )
-                    })
+                .setPositiveButton("OK"
+                ) { _, _ ->
+                    ActivityCompat.requestPermissions(
+                        this, arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        ), 1
+                    )
+                }
                 .setNegativeButton("Cancel",
                     DialogInterface.OnClickListener { dialog, which -> dialog.dismiss() }).create()
                 .show()
@@ -147,6 +147,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    //self Check Permission
     private fun permission_fn() {
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -175,11 +176,10 @@ class LoginActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray,
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions!!, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1) {
             if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Thanks for enabling the permission", Toast.LENGTH_SHORT)
-                    .show()
+                showToast(applicationContext, "Thanks for enabling the permission")
 
                 //do something permission is allowed here....
             } else {
